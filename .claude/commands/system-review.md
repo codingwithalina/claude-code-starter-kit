@@ -175,3 +175,4 @@ For each divergence:
 - **Focus on patterns:** One-off issues aren't actionable. Look for repeated problems.
 - **Action-oriented:** Every finding should have a concrete asset update suggestion
 - **Suggest improvements:** Don't just analyze — actually suggest the text to add to CLAUDE.md or commands
+- **Be selective:** A typical review produces ~10 recommendations. Pick only 2-3 high-value ones that are recurring, apply to future work, and are worth the maintenance cost. Ignore one-off issues, project-specific problems, and over-engineered fixes.

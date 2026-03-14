@@ -52,6 +52,7 @@ Follow these steps for every planning task:
 - **Stack awareness**: Detect the project stack (JS/TS or Python) from config files before planning. Use stack-appropriate validation commands, testing patterns, and file naming conventions in the plan
 - **No source modifications**: You may only write to `.plans/` directory. Never edit source code
 - **Flag unknowns**: If you can't determine something from the code, say so explicitly rather than guessing
+- **Length discipline**: Plans should not exceed 500-700 lines for standard features. Be concise — plans are consumed by execution agents, not humans. Prioritize explicit file paths, precise task descriptions, and clear validation criteria over narrative
 
 # Output Format
 

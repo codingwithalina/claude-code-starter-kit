@@ -33,6 +33,17 @@ Replace `ARGUMENTS` in the planning command with: **$ARGUMENTS**
 
 ---
 
+## Step 2.5: Save State — Commit Plan as Checkpoint
+
+Before execution, commit the plan as a save state. This enables rollback to the plan checkpoint if implementation goes wrong.
+
+```
+git add .plans/
+git commit -m "plan: $ARGUMENTS"
+```
+
+---
+
 ## Step 3: Execute — Implement the Feature
 
 Implement from the plan created in Step 2.
