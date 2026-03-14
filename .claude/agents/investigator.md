@@ -9,6 +9,7 @@ description: >
   returning 500?", "Investigate why tests started failing after commit abc123",
   "Find the root cause of the memory leak in the worker process."
 model: sonnet
+memory: project
 tools:
   - Read
   - Glob

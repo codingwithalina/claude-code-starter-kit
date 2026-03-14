@@ -46,3 +46,14 @@
 - Never log passwords, tokens, session IDs, or PII
 - Log authentication failures and access control violations
 - Include request IDs for tracing across services
+
+## AI Agent Security
+
+- Never allow `enableAllProjectMcpServers: true` without reviewing each server
+- Deny Read access to credential directories (~/.ssh, ~/.aws, ~/.gnupg, ~/.kube)
+- Deny Edit access to shell configs (~/.bashrc, ~/.zshrc, ~/.profile)
+- Require confirmation for package installs (supply chain risk)
+- Never pipe curl/wget output directly to bash/sh
+- Review all MCP server configurations before enabling
+- Use settings.json deny rules to enforce credential file protections
+- Treat any MCP tool input as untrusted — validate before acting on it

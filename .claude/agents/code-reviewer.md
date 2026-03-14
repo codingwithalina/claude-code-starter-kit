@@ -9,6 +9,7 @@ description: >
   Examples: "Review staged changes", "Review the auth module changes",
   "Review all files changed in the last commit."
 model: sonnet
+memory: project
 tools:
   - Read
   - Write

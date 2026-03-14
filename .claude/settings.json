@@ -20,7 +20,13 @@
     "ask": [
       "Bash(git push*)",
       "Bash(rm *)",
-      "Bash(docker *)"
+      "Bash(docker *)",
+      "Bash(npm install*)",
+      "Bash(pnpm install*)",
+      "Bash(pnpm add*)",
+      "Bash(yarn add*)",
+      "Bash(pip install*)",
+      "Bash(uv add*)"
     ],
     "deny": [
       "Bash(rm -rf /)*", "Bash(rm -rf ~)*", "Bash(rm -rf .)*",
@@ -28,11 +34,31 @@
       "Bash(git reset --hard)*", "Bash(git clean -f)*",
       "Bash(chmod 777*)",
       "Bash(mkfs*)",
-      "Bash(:(){ :|:&};:)*"
+      "Bash(:(){ :|:&};:)*",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.gnupg/**)",
+      "Read(~/.kube/**)",
+      "Read(~/.npmrc)",
+      "Read(~/.git-credentials)",
+      "Edit(~/.bashrc)",
+      "Edit(~/.zshrc)",
+      "Edit(~/.bash_profile)",
+      "Edit(~/.profile)"
     ]
   },
   "hooks": {
     "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/branch-protection.sh",
+            "timeout": 5000
+          }
+        ]
+      },
       {
         "matcher": "Bash",
         "hooks": [
@@ -52,6 +78,23 @@
             "type": "command",
             "command": ".claude/hooks/auto-format.sh",
             "timeout": 30000
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/auto-lint.sh",
+            "timeout": 30000
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/notify-completion.sh",
+            "timeout": 5000
           }
         ]
       }

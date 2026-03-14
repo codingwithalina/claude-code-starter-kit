@@ -10,6 +10,7 @@ description: >
   "Design a refactor strategy for the auth module",
   "Create a migration plan for switching from REST to GraphQL."
 model: sonnet
+memory: project
 tools:
   - Read
   - Write
