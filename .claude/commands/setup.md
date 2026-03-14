@@ -33,6 +33,7 @@ Configure this starter kit for your specific project. This wizard will populate 
 > - [ ] **Database patterns** (schema design, migrations, query optimization)
 > - [ ] **API design patterns** (REST conventions, pagination, error handling)
 > - [ ] **AI agent patterns** (tool design, prompt engineering, MCP)
+> - [ ] **Testing patterns** (test architecture, mocking, fixtures for JS/TS and Python)
 
 ### Step 2: Identify Architecture
 
@@ -86,15 +87,16 @@ Then add the `@import` for the copied rule file to CLAUDE.md.
 Based on the stack and Phase B selections, copy skill templates to `.claude/skills/`:
 
 **Default combinations (auto-included with primary framework):**
-- Next.js → `react-patterns/`
-- FastAPI → `api-design/` + `database/`
+- Next.js → `vercel-react-best-practices/` + `vercel-composition-patterns/` + `nextjs-app-router-patterns/`
+- FastAPI → `api-design/` + `database-schema-design/` + `fastapi-templates/` + `python-performance-optimization/`
 - CLI tool → (no default skills)
 - AI Agent → `agent-development/`
 
 **Phase B additions (user-selected, additive):**
-- Database patterns → `database/`
+- Database patterns → `database-schema-design/`
 - API design patterns → `api-design/`
 - AI agent patterns → `agent-development/`
+- Python testing patterns → `python-testing-patterns/`
 
 Deduplicate: if a skill is already included by the primary framework default, don't copy it twice.
 

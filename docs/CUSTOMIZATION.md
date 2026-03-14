@@ -215,6 +215,63 @@ What this skill teaches Claude to do.
 - Include concrete examples, not abstract principles
 - Keep SKILL.md under 160 lines — use references/ for depth
 
+### Advanced Skill Frontmatter
+
+Beyond `name` and `description`, skills support these additional frontmatter fields:
+
+| Field | Type | Effect |
+|-------|------|--------|
+| `argument-hint` | `string` | Shows expected arguments (e.g., `<component-name>`) |
+| `disable-model-invocation` | `boolean` | When `true`, skill is manual-only — Claude won't auto-detect it |
+| `user-invocable` | `boolean` | When `false`, skill is background knowledge only (no `/skill-name`) |
+| `allowed-tools` | `string[]` | Restricts which tools Claude can use when skill is active |
+| `model` | `string` | Override model (e.g., `sonnet` for cheaper execution) |
+| `context` | `string` | Set to `fork` to run skill in an isolated subagent context |
+| `agent` | `string` | Delegate skill execution to a specific subagent |
+| `hooks` | `object` | Skill-scoped hooks that only run when this skill is active |
+
+### Installing Community Skills
+
+Skills follow the [Agent Skills](https://agentskills.io) open standard and can be installed across 40+ AI agents. Browse the skill directory and leaderboard at [skills.sh](https://skills.sh).
+
+**npx skills CLI** (recommended — works across Claude Code, Cursor, Codex, Copilot, and 40+ agents):
+```bash
+npx skills add vercel-labs/agent-skills          # Install all Vercel skills
+npx skills add anthropics/skills                 # Install all Anthropic skills
+npx skills add anthropics/skills -s skill-creator  # Install specific skill
+npx skills find "testing"                        # Search for skills
+npx skills list                                  # List installed skills
+npx skills remove skill-name                     # Uninstall a skill
+npx skills check                                 # Check for updates
+npx skills init my-skill                         # Create new SKILL.md template
+```
+
+**Plugin Marketplace** (Claude Code native):
+```bash
+/plugin marketplace add anthropics/skills                      # Register repo
+/plugin install document-skills@anthropic-agent-skills         # Install plugin
+/plugin list                                                   # List installed
+```
+
+**Manual Installation:**
+Copy a skill directory into `.claude/skills/` (project) or `~/.claude/skills/` (global):
+```
+.claude/skills/
+  community-skill/
+    SKILL.md
+    references/
+      cookbook.md
+```
+
+**Using the Skill Creator:**
+Use the `/creating-skills` core skill or install Anthropic's official `skill-creator` (`npx skills add anthropics/skills -s skill-creator`) for a full eval-driven workflow with automated description optimization.
+
+**Key Ecosystems:**
+- **[anthropics/skills](https://github.com/anthropics/skills)** — Official Anthropic skills: frontend-design, skill-creator, webapp-testing, PDF/DOCX/XLSX, claude-api, mcp-builder
+- **[vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills)** — react-best-practices (40+ rules), web-design-guidelines (100+ rules), composition-patterns
+- **[obra/superpowers](https://github.com/obra/superpowers)** — Complete dev workflow with TDD, debugging, and 20+ battle-tested skills
+- **[travisvn/awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills)** — Curated directory of community skills across all domains
+
 ---
 
 ## Custom Subagents
@@ -353,12 +410,12 @@ Templates in `templates/` are framework-specific rules and skills that get copie
 
 | Detected Framework | Rule Template | Skill Templates |
 |--------------------|---------------|-----------------|
-| Next.js | `nextjs.md` | `react-patterns/` |
-| FastAPI | `fastapi.md` | `api-design/`, `database/` |
+| Next.js | `nextjs.md` | `vercel-react-best-practices/`, `vercel-composition-patterns/`, `nextjs-app-router-patterns/` |
+| FastAPI | `fastapi.md` | `api-design/`, `database-schema-design/`, `fastapi-templates/`, `python-performance-optimization/` |
 | CLI tool | `cli-tool.md` | — |
 | AI Agent | `ai-agents.md` | `agent-development/` |
 
-Users can also select additional skill templates (database, API design, agent development) regardless of framework.
+Users can also select additional skill templates (database, API design, agent development, python testing) regardless of framework. The `python-testing-patterns/` skill is offered to all Python stacks during Phase B of setup.
 
 ---
 

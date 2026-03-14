@@ -15,13 +15,13 @@ Turn Claude Code from a blank canvas into a structured development engine. Go fr
 |----------|-------|---------|
 | Slash commands | 16 | 5 PIV loop + 1 pipeline + 8 extended + 2 bugfix |
 | Rules | 8 | 6 universal + 2 path-targeted (api/, frontend/) |
-| Skills | 5 | Progressive depth with references/ |
+| Skills | 12 | 1 custom + 11 from ecosystem (anthropics, vercel, obra, supercent, mattpocock) |
 | Subagents | 5 | 1 haiku (fast research) + 4 sonnet (reasoning) |
 | Safety hooks | 2 | Dangerous command blocker + auto-formatter |
 | Permission tiers | 3 | allow / ask / deny in settings.json |
 | MCP templates | 7 | Playwright, Supabase, GitHub, PostgreSQL, Memory, Fetch, Filesystem |
 | Rule templates | 4 | Next.js, FastAPI, CLI, AI Agents |
-| Skill templates | 4 | React, API Design, Database, Agent Development |
+| Skill templates | 10 | 2 custom + 8 from ecosystem (vercel, wshobson, supercent) |
 
 **JS/TS + Python focused** with injectable specializations for web apps, APIs, CLIs, and AI agents.
 
@@ -124,7 +124,7 @@ See [Commands Reference](docs/COMMANDS-REFERENCE.md) for INPUT/PROCESS/OUTPUT do
 ├─────────────────────────────────────────────┤
 │  Commands       (user-invoked)              │  15 commands with tool restrictions
 ├─────────────────────────────────────────────┤
-│  Skills         (auto-detected)             │  5 skills with progressive depth
+│  Skills         (auto-detected)             │  12 skills (1 custom + 11 ecosystem)
 ├─────────────────────────────────────────────┤
 │  Subagents      (delegated)                 │  5 agents: researcher, planner, reviewer,
 │                                             │  validator, investigator
@@ -193,12 +193,19 @@ claude-code-starter-kit/
 │   │   │   └── api-patterns.md        #   Path-targeted: REST design, pagination
 │   │   └── frontend/
 │   │       └── ui-patterns.md         #   Path-targeted: UI design patterns
-│   ├── skills/                        # 5 auto-detected skills
+│   ├── skills/                        # 12 auto-detected skills (1 custom + 11 ecosystem)
 │   │   ├── context-management/        #   Context window optimization
-│   │   ├── debugging/                 #   Systematic debugging methodology
-│   │   ├── planning/                  #   Strategic planning methodology
-│   │   ├── refactoring/               #   Safe refactoring patterns
-│   │   └── sub-agent-patterns/        #   When and how to delegate
+│   │   ├── claude-api/                #   🌐 anthropics/skills — Claude API & SDK patterns
+│   │   ├── frontend-design/           #   🌐 anthropics/skills — Production-grade UI design
+│   │   ├── mcp-builder/               #   🌐 anthropics/skills — Build MCP servers
+│   │   ├── skill-creator/             #   🌐 anthropics/skills — Create & test skills with evals
+│   │   ├── webapp-testing/            #   🌐 anthropics/skills — Playwright web app testing
+│   │   ├── systematic-debugging/      #   🌐 obra/superpowers — Hypothesis-driven debugging (30K)
+│   │   ├── subagent-driven-development/ # 🌐 obra/superpowers — Parallel subagent patterns (19K)
+│   │   ├── code-refactoring/          #   🌐 supercent-io — Safe code restructuring (10.8K)
+│   │   ├── task-planning/             #   🌐 supercent-io — Task planning & decomposition (10.6K)
+│   │   ├── tdd/                       #   🌐 mattpocock/skills — Test-driven development (3.3K)
+│   │   └── web-design-guidelines/     #   🌐 vercel-labs — UI review (100+ rules, 164K)
 │   └── mcp-templates/                 # 7 MCP server configs
 │       ├── fetch.json                 #   Web content fetching
 │       ├── filesystem.json            #   Extended file operations
@@ -220,11 +227,17 @@ claude-code-starter-kit/
     │   ├── fastapi.md                 #   FastAPI, Pydantic 2.x, Python 3.12+
     │   ├── cli-tool.md                #   CLI applications
     │   └── ai-agents.md              #   LLM-powered applications
-    └── skills/                        # 4 framework-specific skill templates
-        ├── react-patterns/            #   React 19, hooks, Server Components
-        ├── api-design/                #   REST conventions, pagination
-        ├── database/                  #   Schema design, query optimization
-        └── agent-development/         #   Tool design, MCP, prompting
+    └── skills/                        # 10 framework-specific skill templates (2 custom + 8 ecosystem)
+        ├── agent-development/         #   Tool design, MCP, prompting
+        ├── edge-api/                  #   Edge API patterns
+        ├── vercel-react-best-practices/ # 🌐 vercel-labs — React/Next.js perf (40+ rules, 208K)
+        ├── vercel-composition-patterns/ # 🌐 vercel-labs — Component composition patterns
+        ├── nextjs-app-router-patterns/  # 🌐 wshobson/agents — Next.js App Router (8.3K)
+        ├── fastapi-templates/           # 🌐 wshobson/agents — FastAPI patterns (6.4K)
+        ├── python-performance-optimization/ # 🌐 wshobson/agents — Python perf (8.9K)
+        ├── python-testing-patterns/     # 🌐 wshobson/agents — Python testing (7.1K)
+        ├── api-design/                  # 🌐 supercent-io — REST API design (10.8K)
+        └── database-schema-design/      # 🌐 supercent-io — Schema design (11K)
 ```
 
 ---
@@ -242,12 +255,18 @@ claude-code-starter-kit/
 
 ### Skill Templates
 
-| Template | Focus | Includes |
-|----------|-------|----------|
-| `react-patterns/` | React 19 | Hooks, composition, Server Components, accessibility |
-| `api-design/` | REST APIs | Validation, pagination, error handling, rate limiting |
-| `database/` | Databases | Schema design, migrations, query optimization |
-| `agent-development/` | AI agents | Tool design, prompt engineering, MCP |
+| Template | Source | Focus |
+|----------|--------|-------|
+| `vercel-react-best-practices/` | 🌐 vercel-labs/agent-skills | React/Next.js perf (40+ rules, 208K installs) |
+| `vercel-composition-patterns/` | 🌐 vercel-labs/agent-skills | Component composition that scales |
+| `nextjs-app-router-patterns/` | 🌐 wshobson/agents | Next.js 15+ App Router patterns (8.3K installs) |
+| `fastapi-templates/` | 🌐 wshobson/agents | FastAPI route patterns (6.4K installs) |
+| `python-performance-optimization/` | 🌐 wshobson/agents | Python performance (8.9K installs) |
+| `python-testing-patterns/` | 🌐 wshobson/agents | Python testing patterns (7.1K installs) |
+| `api-design/` | 🌐 supercent-io/skills-template | REST API design patterns (10.8K installs) |
+| `database-schema-design/` | 🌐 supercent-io/skills-template | Schema design, migrations (11K installs) |
+| `agent-development/` | Custom | Tool design, prompt engineering, MCP |
+| `edge-api/` | Custom | Edge API patterns |
 
 ---
 

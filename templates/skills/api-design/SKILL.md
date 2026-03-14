@@ -1,172 +1,334 @@
 ---
 name: api-design
-description: >
-  Teaches REST and GraphQL API design patterns including endpoint conventions,
-  error response formats, pagination, authentication, and versioning. Use when
-  designing new API endpoints, defining request/response schemas, implementing
-  pagination or filtering, setting up authentication middleware, adding rate
-  limiting, or choosing an API versioning strategy.
+description: Design RESTful and GraphQL APIs following best practices. Use when creating new APIs, refactoring existing endpoints, or documenting API specifications. Handles OpenAPI, REST, GraphQL, versioning.
+license: Apache-2.0
+compatibility: ""
+metadata:
+  version: 1.0.0
+  author: Agent Skills Team
+  tags: api-design, REST, GraphQL, OpenAPI, versioning, backend
+  platforms: Claude, ChatGPT, Gemini
 ---
 
-# API Design Patterns
 
-## When to Use
+# API Design
 
-- Designing or modifying API endpoints, request/response schemas, status codes
-- Implementing pagination, filtering, sorting, or search
-- Setting up authentication, authorization, or rate limiting
-- Choosing an API versioning strategy
+## When to use this skill
+- Designing new REST APIs
+- Creating GraphQL schemas
+- Refactoring API endpoints
+- Documenting API specifications
+- API versioning strategies
+- Defining data models and relationships
 
-## When NOT to Use
+## Instructions
 
-- Frontend-only work, database schema design, or internal function APIs
+### Step 1: Define API requirements
+- Identify resources and entities
+- Define relationships between entities
+- Specify operations (CRUD, custom actions)
+- Plan authentication/authorization
+- Consider pagination, filtering, sorting
 
-## API Design Checklist
+### Step 2: Design REST API
 
-- [ ] RESTful URL structure (plural nouns, kebab-case)
-- [ ] Correct HTTP methods and status codes
-- [ ] Consistent error response format
-- [ ] Pagination for list endpoints
-- [ ] Input validation with descriptive errors
-- [ ] Authentication and authorization
-- [ ] Rate limiting headers
-- [ ] API versioning strategy
+**Resource naming**:
+- Use nouns, not verbs: `/users` not `/getUsers`
+- Use plural names: `/users/{id}`
+- Nest resources logically: `/users/{id}/posts`
+- Keep URLs short and intuitive
 
-## REST Conventions
+**HTTP methods**:
+- `GET`: Retrieve resources (idempotent)
+- `POST`: Create new resources
+- `PUT`: Replace entire resource
+- `PATCH`: Partial update
+- `DELETE`: Remove resources (idempotent)
 
-### URL Structure
+**Response codes**:
+- `200 OK`: Success with response body
+- `201 Created`: Resource created successfully
+- `204 No Content`: Success with no response body
+- `400 Bad Request`: Invalid input
+- `401 Unauthorized`: Authentication required
+- `403 Forbidden`: No permission
+- `404 Not Found`: Resource doesn't exist
+- `409 Conflict`: Resource conflict
+- `422 Unprocessable Entity`: Validation failed
+- `500 Internal Server Error`: Server error
+
+**Example REST endpoint**:
 ```
-GET    /api/v1/users              # List users
-POST   /api/v1/users              # Create user
-GET    /api/v1/users/:id          # Get user
-PATCH  /api/v1/users/:id          # Update user (partial)
-PUT    /api/v1/users/:id          # Replace user (full)
-DELETE /api/v1/users/:id          # Delete user
-GET    /api/v1/users/:id/orders   # Nested resource (max 2 levels)
+GET    /api/v1/users           # List users
+GET    /api/v1/users/{id}      # Get user
+POST   /api/v1/users           # Create user
+PUT    /api/v1/users/{id}      # Update user
+PATCH  /api/v1/users/{id}      # Partial update
+DELETE /api/v1/users/{id}      # Delete user
 ```
 
-- Use plural nouns: `/users` not `/user`
-- Use kebab-case: `/order-items` not `/orderItems`
-- Use query params for filtering and sorting: `?status=active&sort=-created_at`
+### Step 3: Request/Response format
 
-### Status Codes
-- `200` OK -- Successful GET, PATCH, PUT
-- `201` Created -- Successful POST
-- `204` No Content -- Successful DELETE
-- `400` Bad Request -- Validation error
-- `401` Unauthorized -- Missing or invalid auth
-- `403` Forbidden -- Auth valid but no permission
-- `404` Not Found -- Resource doesn't exist
-- `409` Conflict -- Duplicate or state conflict
-- `422` Unprocessable Entity -- Valid syntax, invalid semantics
-- `429` Too Many Requests -- Rate limited
-- `500` Internal Server Error -- Unexpected server error
+**Request example**:
+```json
+POST /api/v1/users
+Content-Type: application/json
 
-## TypeScript-First API Frameworks
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "role": "admin"
+}
+```
 
-Modern TypeScript API frameworks provide end-to-end type safety and better DX:
+**Response example**:
+```json
+HTTP/1.1 201 Created
+Content-Type: application/json
+Location: /api/v1/users/123
 
-- **tRPC**: End-to-end type safety between client and server without code generation. Best for full-stack TypeScript apps where you control both client and server.
-- **Express/Fastify**: Mature Node.js frameworks with large ecosystem and middleware support.
+{
+  "id": 123,
+  "name": "John Doe",
+  "email": "john@example.com",
+  "role": "admin",
+  "created_at": "2024-01-15T10:30:00Z",
+  "updated_at": "2024-01-15T10:30:00Z"
+}
+```
 
-### When to Choose
-- **Next.js API Routes** → Full-stack Next.js app, co-located frontend and backend
-- **FastAPI** → Python backend, async, auto-generated OpenAPI docs
-- **tRPC** → Full-stack TS monorepo, no REST needed, maximum type safety
-- **Express/Fastify** → Large existing ecosystem, many middleware dependencies
+### Step 4: Error handling
 
-## Error Response Format
-
-Use a consistent format across all endpoints:
-
+**Error response format**:
 ```json
 {
   "error": {
     "code": "VALIDATION_ERROR",
-    "message": "Human-readable description of the error",
+    "message": "Invalid input provided",
     "details": [
       {
         "field": "email",
-        "message": "Must be a valid email address",
-        "code": "INVALID_FORMAT"
+        "message": "Invalid email format"
       }
     ]
   }
 }
 ```
 
-- Always include a machine-readable `code` and human-readable `message`
-- Use `details` array for field-level validation errors
-- Never expose stack traces or internal error details in production
+### Step 5: Pagination
 
-## Pagination
+**Query parameters**:
+```
+GET /api/v1/users?page=2&limit=20&sort=-created_at&filter=role:admin
+```
 
-### Cursor-Based (Recommended)
+**Response with pagination**:
 ```json
 {
-  "data": [],
-  "pagination": { "next_cursor": "eyJpZCI6MTAwfQ==", "has_more": true }
+  "data": [...],
+  "pagination": {
+    "page": 2,
+    "limit": 20,
+    "total": 100,
+    "pages": 5
+  },
+  "links": {
+    "self": "/api/v1/users?page=2&limit=20",
+    "first": "/api/v1/users?page=1&limit=20",
+    "prev": "/api/v1/users?page=1&limit=20",
+    "next": "/api/v1/users?page=3&limit=20",
+    "last": "/api/v1/users?page=5&limit=20"
+  }
 }
 ```
-Best for: infinite scroll, real-time data, large datasets. Consistent under inserts/deletes.
 
-### Offset-Based
-```json
+### Step 6: Authentication
+
+**Options**:
+- JWT (JSON Web Tokens)
+- OAuth 2.0
+- API Keys
+- Session-based
+
+**Example with JWT**:
+```
+GET /api/v1/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### Step 7: Versioning
+
+**URL versioning** (recommended):
+```
+/api/v1/users
+/api/v2/users
+```
+
+**Header versioning**:
+```
+GET /api/users
+Accept: application/vnd.api+json; version=1
+```
+
+### Step 8: Documentation
+
+Create OpenAPI 3.0 specification:
+
+```yaml
+openapi: 3.0.0
+info:
+  title: User Management API
+  version: 1.0.0
+  description: API for managing users
+servers:
+  - url: https://api.example.com/v1
+paths:
+  /users:
+    get:
+      summary: List users
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+    post:
+      summary: Create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        created_at:
+          type: string
+          format: date-time
+    UserCreate:
+      type: object
+      required:
+        - name
+        - email
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+```
+
+## Best practices
+
+1. **Consistency**: Use consistent naming, structure, and patterns
+2. **Versioning**: Always version your APIs from the start
+3. **Security**: Implement authentication and authorization
+4. **Validation**: Validate all inputs on the server side
+5. **Rate limiting**: Protect against abuse
+6. **Caching**: Use ETags and Cache-Control headers
+7. **CORS**: Configure properly for web clients
+8. **Documentation**: Keep docs up-to-date with code
+9. **Testing**: Test all endpoints thoroughly
+10. **Monitoring**: Log requests and track performance
+
+## Common patterns
+
+**Filtering**:
+```
+GET /api/v1/users?role=admin&status=active
+```
+
+**Sorting**:
+```
+GET /api/v1/users?sort=-created_at,name
+```
+
+**Field selection**:
+```
+GET /api/v1/users?fields=id,name,email
+```
+
+**Batch operations**:
+```
+POST /api/v1/users/batch
 {
-  "data": [],
-  "pagination": { "page": 1, "per_page": 20, "total": 156, "total_pages": 8 }
+  "operations": [
+    {"action": "create", "data": {...}},
+    {"action": "update", "id": 123, "data": {...}}
+  ]
 }
 ```
-Best for: numbered pages, admin dashboards. Simpler but inconsistent under concurrent writes.
 
-## Authentication Patterns
+## GraphQL alternative
 
-### JWT (Stateless)
-- Access token: short-lived (15 min), sent in `Authorization: Bearer <token>`
-- Refresh token: long-lived (7-30 days), stored in httpOnly cookie
-- Include only essential claims (user_id, role) -- not sensitive data
+If REST doesn't fit, consider GraphQL:
 
-### API Keys
-- For service-to-service or developer API access
-- Send in header: `X-API-Key: <key>` or `Authorization: Bearer <key>`
-- Scope keys to specific permissions
-- Support key rotation (allow multiple active keys per client)
+```graphql
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  posts: [Post!]!
+  createdAt: DateTime!
+}
 
-## GraphQL Essentials
+type Query {
+  users(page: Int, limit: Int): [User!]!
+  user(id: ID!): User
+}
 
-### When to Prefer GraphQL over REST
-- Clients need flexible data shapes (mobile vs web)
-- Multiple related resources needed in a single request
-- Rapid frontend iteration without backend changes
-
-### Core Patterns
-- **Schema-first design**: define types and operations before resolvers
-- **Resolver pattern**: one resolver per field, compose for complex queries
-- **N+1 prevention**: use DataLoader to batch and deduplicate database calls
-- **Pagination**: use Relay-style connections (edges, nodes, pageInfo)
-
-## Rate Limiting
-
-- Return `429 Too Many Requests` with `Retry-After` header
-- Progressive limits: stricter for writes, relaxed for reads
-- Include headers: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`
-
-## Versioning
-
-- URL prefix versioning: `/api/v1/`, `/api/v2/`
-- Only increment for breaking changes
-- Support previous version for a reasonable deprecation period
-- Document breaking changes in a changelog
-
-## Anti-Patterns
-
-- **Verbs in URLs** -- `/getUsers` instead of `GET /users`
-- **Exposing internal IDs or database structure** -- use UUIDs or slugs
-- **Inconsistent error formats** across endpoints
-- **Missing pagination** on list endpoints
-- **Leaking stack traces** in production error responses
-- **Ignoring idempotency** -- PUT and DELETE should be idempotent
+type Mutation {
+  createUser(input: CreateUserInput!): User!
+  updateUser(id: ID!, input: UpdateUserInput!): User!
+  deleteUser(id: ID!): Boolean!
+}
+```
 
 ## References
 
-See `references/api-cookbook.md` for complete endpoint implementations, middleware patterns, and OpenAPI templates.
+- [OpenAPI Specification](https://swagger.io/specification/)
+- [REST API Tutorial](https://restfulapi.net/)
+- [GraphQL Best Practices](https://graphql.org/learn/best-practices/)
+- [HTTP Status Codes](https://httpstatuses.com/)
+
+## Examples
+
+### Example 1: Basic usage
+<!-- Add example content here -->
+
+### Example 2: Advanced usage
+<!-- Add advanced example content here -->
