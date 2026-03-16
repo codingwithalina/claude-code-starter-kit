@@ -16,9 +16,9 @@
 - Never consider a change "done" until verification passes
 - If no test exists for the behavior you changed, write one
 
-## Sub-Agent Routing
+## Subagent Routing
 
-Use sub-agents to keep the main context focused on implementation:
+Use subagents to keep the main context focused on implementation:
 
 ### When to use parallel dispatch
 - 3+ independent research queries with no shared state
@@ -35,7 +35,7 @@ Use sub-agents to keep the main context focused on implementation:
 - Long-running validation while you continue editing
 - Exploring alternative approaches while primary approach proceeds
 
-### When NOT to use sub-agents
+### When NOT to use subagents
 - Simple, focused tasks (one file, one edit)
 - When the answer is a single glob/grep query away
 - Tasks requiring full conversation context to complete
@@ -46,7 +46,7 @@ Use sub-agents to keep the main context focused on implementation:
 - Use /clear between unrelated tasks to reset context
 - Compact proactively — summarize findings when context grows large
 - Sessions longer than 30-45 minutes risk context degradation; start fresh
-- Delegate research to sub-agents to keep main context lean
+- Delegate research to subagents to keep main context lean
 
 ## Worktrees for Parallel Execution
 

@@ -413,6 +413,32 @@ Templates in `templates/` are framework-specific rules and skills that get copie
 2. Follow the progressive depth pattern — overview in SKILL.md, detail in references/
 3. Update `/setup` to offer the skill for relevant frameworks
 
+### Available Rule Templates
+
+| Template | Framework | Key Topics |
+|----------|-----------|------------|
+| `nextjs.md` | Next.js 15+ | App Router, Server/Client Components, React 19, Tailwind v4 |
+| `fastapi.md` | FastAPI 0.115+ | Pydantic 2.x, SQLAlchemy 2.0, async patterns, Python 3.12+ |
+| `cli-tool.md` | CLI apps | Argument parsing, output formatting, exit codes |
+| `ai-agents.md` | AI/LLM | Tool design, prompt engineering, MCP integration |
+| `hono.md` | Hono 4.x+ | Edge-first API patterns, middleware, TypeScript |
+| `react-native.md` | React Native / Expo | Expo SDK 52+, React Native 0.76+ |
+
+### Available Skill Templates
+
+| Template | Source | Focus |
+|----------|--------|-------|
+| `vercel-react-best-practices/` | vercel-labs/agent-skills | React/Next.js perf (40+ rules, 208K installs) |
+| `vercel-composition-patterns/` | vercel-labs/agent-skills | Component composition that scales |
+| `nextjs-app-router-patterns/` | wshobson/agents | Next.js 15+ App Router patterns (8.3K installs) |
+| `fastapi-templates/` | wshobson/agents | FastAPI route patterns (6.4K installs) |
+| `python-performance-optimization/` | wshobson/agents | Python performance (8.9K installs) |
+| `python-testing-patterns/` | wshobson/agents | Python testing patterns (7.1K installs) |
+| `api-design/` | supercent-io/skills-template | REST API design patterns (10.8K installs) |
+| `database-schema-design/` | supercent-io/skills-template | Schema design, migrations (11K installs) |
+| `agent-development/` | Custom | Tool design, prompt engineering, MCP |
+| `edge-api/` | Custom | Edge API patterns |
+
 ### How /setup Discovers Templates
 
 `/setup` maps frameworks to templates:

@@ -9,7 +9,24 @@ Turn Claude Code from a blank canvas into a structured development engine. Go fr
 
 ---
 
+## Who Is This For?
+
+Any developer using Claude Code who wants a repeatable workflow instead of ad-hoc prompting. Whether you're building web apps, APIs, CLIs, or AI agents — the kit gives Claude the structure to work autonomously while following your project's conventions.
+
+---
+
+## What Makes This Different?
+
+- **Tool restrictions per command** — `/prime` can only read, `/commit` can only use git. No accidental modifications during exploration.
+- **5-layer architecture** — Rules (always-on) → Commands (workflows) → Skills (on-demand) → Subagents (parallel workers) → Hooks (safety net). Each layer activates at the right time.
+- **Subagent delegation** — Research runs in haiku (fast, cheap), reasoning runs in sonnet. Main context stays clean.
+- **Self-improving** — Feedback loops (`/execution-report` → `/system-review`) analyze the process and suggest improvements to CLAUDE.md and commands.
+
+---
+
 ## What You Get
+
+16 commands, 8 rules, 16 skills, 5 subagents, 5 hooks — all pre-configured.
 
 | Category | Count | Details |
 |----------|-------|---------|
@@ -65,162 +82,32 @@ Five core commands form the Plan-Implement-Validate workflow:
 
 **Feedback loop**: After implementation, `/execution-report` captures divergences, then `/system-review` analyzes the process and suggests improvements to CLAUDE.md, commands, and workflows.
 
+See [Workflow Guide](docs/WORKFLOW-GUIDE.md) for the full methodology: two-tier context system, validation pyramid, stress-testing, and best practices.
+
 ---
 
 ## All Commands
 
-### Core Workflow
+| Command | Purpose | Output |
+|---------|---------|--------|
+| `/prime` | Load codebase context | Console summary |
+| `/plan <feature>` | Create implementation plan | `.plans/{name}.md` |
+| `/execute <plan>` | Implement from plan | Console report |
+| `/validate` | Run lint, types, tests, build | Pass/fail table |
+| `/commit` | Atomic conventional commit | Git commit |
+| `/build <feature>` | Full pipeline (all above) | Plan + commit |
+| `/setup` | Project initialization wizard | CLAUDE.md + configs |
+| `/create-prd <name>` | Generate PRD | `.plans/prd-{name}.md` |
+| `/review [files]` | Code review | `.plans/reviews/` |
+| `/execution-report` | Plan vs actual comparison | `.plans/reports/` |
+| `/system-review <plan> <report>` | Process improvements | `.plans/system-reviews/` |
+| `/code-review-fix <file>` | Apply review fixes | Console report |
+| `/refactor <scope>` | Safe code restructuring | `.plans/refactors/` + commits |
+| `/test <file>` | Generate tests | Test files + console |
+| `/rca <issue>` | Root cause analysis | `.plans/rca-{id}.md` |
+| `/fix <issue>` | Implement fix from RCA | Console + suggested commit |
 
-| Command | Args | Allowed Tools | Output |
-|---------|------|---------------|--------|
-| `/prime` | — | Read, Glob, Grep, Bash(git) | Console summary |
-| `/plan` | `<feature>` | Read, Write, Glob, Grep, Bash(git), Agent | `.plans/{name}.md` |
-| `/execute` | `<plan-file>` | Read, Write, Edit, Bash, Glob, Grep, Agent | Console report |
-| `/validate` | — | Read, Bash, Glob, Grep | Pass/fail table |
-| `/commit` | — | Read, Grep, Bash(git) | Git commit |
-
-### Pipeline
-
-| Command | Args | Allowed Tools | Output |
-|---------|------|---------------|--------|
-| `/build` | `<feature>` | Read, Write, Edit, Bash, Glob, Grep, Agent | Plan + commit |
-
-### Extended
-
-| Command | Args | Allowed Tools | Output |
-|---------|------|---------------|--------|
-| `/setup` | — | Read, Write, Edit, Bash, Glob, Grep | CLAUDE.md + configs |
-| `/create-prd` | `<name>` | Read, Write, Glob, Grep | `.plans/prd-{name}.md` |
-| `/review` | `[files]` | Read, Write, Glob, Grep, Bash(git), Agent | `.plans/reviews/` |
-| `/execution-report` | — | Read, Write, Glob, Grep, Bash(git) | `.plans/reports/` |
-| `/system-review` | `<plan> <report>` | Read, Write, Glob, Grep, Bash(git) | `.plans/system-reviews/` |
-| `/code-review-fix` | `<review-file>` | Read, Write, Edit, Bash, Glob, Grep | Console report |
-| `/refactor` | `<scope>` | Read, Write, Edit, Bash, Glob, Grep, Agent | `.plans/refactors/` + commits |
-| `/test` | `<file-or-module>` | Read, Write, Edit, Bash, Glob, Grep, Agent | Test files + console |
-
-### Bugfix
-
-| Command | Args | Allowed Tools | Output |
-|---------|------|---------------|--------|
-| `/rca` | `<issue-or-desc>` | Read, Write, Glob, Grep, Bash(git, gh), Agent | `.plans/rca-{id}.md` |
-| `/fix` | `<issue-id>` | Read, Write, Edit, Bash, Glob, Grep, Agent | Console + suggested commit |
-
-### Feedback Loop
-
-| Command | Args | Allowed Tools | Output |
-|---------|------|---------------|--------|
-| `/system-review` | `<plan> <report>` | Read, Write, Glob, Grep, Bash(git) | `.plans/system-reviews/` |
-
-See [Commands Reference](docs/COMMANDS-REFERENCE.md) for INPUT/PROCESS/OUTPUT documentation for each command.
-
----
-
-## The Agentic Coding Workflow
-
-This section explains **how to build software** with the starter kit — the methodology behind the commands.
-
-### Two-Tier Context System
-
-| Tier | What | How it loads | Examples |
-|------|------|-------------|----------|
-| **Always-on** | Rules, CLAUDE.md | Automatically every session | Code quality, testing, security, git workflow |
-| **On-demand** | Skills, plans, references | Activated when relevant or invoked | TDD methodology, debugging framework, PRD templates |
-
-Rules define *what* Claude must always follow. Skills provide *how* — loaded only when the task matches, keeping context lean.
-
-### Development Pipeline
-
-```
-┌─────────┐    ┌─────────┐    ┌─────────┐    ┌──────────┐    ┌─────────┐
-│  Prime  │───→│  Plan   │───→│ Execute │───→│ Validate │───→│ Commit  │
-└─────────┘    └─────────┘    └─────────┘    └──────────┘    └─────────┘
-  context        design       implement        verify          ship
-```
-
-| Phase | Kit command | What happens |
-|-------|-------------|-------------|
-| Context loading | `/prime` | Reads project structure, stack, git state |
-| Design | `/plan <feature>` | Creates implementation plan with confidence score |
-| Implementation | `/execute <plan>` | Implements from plan, validates per-task |
-| Verification | `/validate` | Runs lint, types, tests, build |
-| Shipping | `/commit` | Conventional commit with atomic changes |
-| **Full pipeline** | `/build <feature>` | Chains all above with gates between steps |
-
-### Validation Pyramid
-
-```
-         ┌───────────┐
-         │   Build   │   Can it compile/bundle?
-        ┌┴───────────┴┐
-        │    Tests    │   Does it behave correctly?
-       ┌┴─────────────┴┐
-       │  Type Checks  │   Are types consistent?
-      ┌┴───────────────┴┐
-      │     Linting     │   Does it follow conventions?
-     ┌┴─────────────────┴┐
-     │   Code Review     │   Is it maintainable?
-     └───────────────────┘
-```
-
-`/validate` runs all five levels. `/review` adds the human-quality code review layer.
-
-### Stress-Testing & Architecture
-
-- **`grill-me`** — Stress-test your plan before execution. Claude interviews you relentlessly about edge cases, trade-offs, and assumptions until the design is solid.
-- **`improve-codebase-architecture`** — Explore the codebase for architectural improvements: shallow modules, tight coupling, testability gaps. Produces RFCs, not direct changes.
-
-### Feedback Loops
-
-```
-/execution-report → /system-review → improve CLAUDE.md, commands, workflows
-```
-
-After each feature, capture what diverged from the plan, then analyze the process to improve the system itself.
-
-### Best Practices
-
-| Practice | Why |
-|----------|-----|
-| Small iterations | Each plan-implement-validate loop should be one logical change. Smaller scope = higher success rate. |
-| Subagent delegation | Use `researcher` (haiku) for codebase exploration. Keep the main context focused on implementation. |
-| Context budgeting | Run `/clear` between unrelated tasks. Keep sessions to 30-45 minutes. Context is a finite resource. |
-| Parallel execution with worktrees | When multiple features are independent, use worktrees so agents don't conflict on file edits. |
-| Vertical slices | Structure features as vertical slices (route + logic + data + tests) for parallel-safe development. |
-| Plan as checkpoint | Commit the plan before execution — enables rollback if implementation goes wrong. |
-| On-demand depth | Skills load overviews first, deep references only when needed. Don't front-load context you might not use. |
-
----
-
-## Layer Architecture
-
-```
-┌─────────────────────────────────────────────┐
-│  Rules          (always loaded)             │  8 rules: code quality, testing, security,
-│                                             │  architecture, git, AI workflow, api, frontend
-├─────────────────────────────────────────────┤
-│  Commands       (user-invoked)              │  16 commands with tool restrictions
-├─────────────────────────────────────────────┤
-│  Skills         (auto-detected)             │  16 skills (5 custom + 11 ecosystem)
-├─────────────────────────────────────────────┤
-│  Subagents      (delegated)                 │  5 agents: researcher, planner, reviewer,
-│                                             │  validator, investigator
-├─────────────────────────────────────────────┤
-│  Hooks          (safety net)                │  5 hooks: safety, formatting, linting,
-│                                             │  branch protection, notifications
-└─────────────────────────────────────────────┘
-```
-
-**Subagents** handle parallel work without polluting the main context:
-
-| Agent | Model | Purpose |
-|-------|-------|---------|
-| researcher | haiku | Fast codebase exploration (read-only, parallelizable) |
-| planner | sonnet | Solution design and plan generation |
-| code-reviewer | sonnet | 6-dimension quality analysis |
-| validator | sonnet | Test/lint/type/build runner |
-| investigator | sonnet | Hypothesis-driven debugging and RCA |
-
-See [Architecture Guide](docs/ARCHITECTURE-GUIDE.md) for the full stack explanation, subagent security design, and migration guide.
+See [Commands Reference](docs/COMMANDS-REFERENCE.md) for INPUT/PROCESS/OUTPUT documentation and allowed tools for each command.
 
 ---
 
@@ -228,135 +115,23 @@ See [Architecture Guide](docs/ARCHITECTURE-GUIDE.md) for the full stack explanat
 
 ```
 claude-code-starter-kit/
-├── CLAUDE.md                          # Root rules (<200 lines, @imports)
-├── .claudeignore                      # Excludes deps, builds, binaries from context
-├── README.md                          # This file
+├── CLAUDE.md                     # Root rules (<200 lines, @imports)
+├── .claudeignore                 # Excludes deps, builds, binaries from context
 ├── .claude/
-│   ├── settings.json                  # Permissions (allow/ask/deny), hooks, MCP
-│   ├── agents/                        # 5 subagents
-│   │   ├── researcher.md              #   haiku — fast codebase explorer
-│   │   ├── planner.md                 #   sonnet — solution designer
-│   │   ├── code-reviewer.md           #   sonnet — quality reviewer
-│   │   ├── validator.md               #   sonnet — test/lint/build runner
-│   │   └── investigator.md            #   sonnet — debugger & RCA
-│   ├── commands/                      # 16 slash commands
-│   │   ├── prime.md                   #   /prime — load context
-│   │   ├── plan.md                    #   /plan — create plan
-│   │   ├── execute.md                 #   /execute — implement from plan
-│   │   ├── validate.md                #   /validate — run all checks
-│   │   ├── commit.md                  #   /commit — atomic commit
-│   │   ├── build.md                   #   /build — full pipeline
-│   │   ├── setup.md                   #   /setup — project init wizard
-│   │   ├── create-prd.md              #   /create-prd — generate PRD
-│   │   ├── review.md                  #   /review — code review
-│   │   ├── execution-report.md        #   /execution-report — plan vs actual
-│   │   ├── system-review.md          #   /system-review — process improvements
-│   │   ├── code-review-fix.md         #   /code-review-fix — apply review fixes
-│   │   ├── refactor.md                #   /refactor — safe code restructuring
-│   │   ├── test.md                    #   /test — focused test generation
-│   │   └── bugfix/                    #   Namespaced bugfix commands
-│   │       ├── rca.md                 #     /rca — root cause analysis
-│   │       └── fix.md                 #     /fix — implement fix from RCA
-│   ├── hooks/                         # 5 hooks (safety + automation)
-│   │   ├── block-dangerous-commands.sh#   PreToolUse — blocks destructive commands
-│   │   ├── branch-protection.sh       #   PreToolUse — warns on main/master edits
-│   │   ├── auto-format.sh            #   PostToolUse — auto-formats after edits
-│   │   ├── auto-lint.sh              #   PostToolUse — runs linter after edits
-│   │   └── notify-completion.sh      #   Stop — desktop notification on task completion
-│   ├── rules/                         # 8 auto-loaded rules
-│   │   ├── code-quality.md            #   Naming, structure, error handling
-│   │   ├── testing.md                 #   Test standards, AAA, coverage
-│   │   ├── git-workflow.md            #   Conventional commits, safety
-│   │   ├── security.md                #   OWASP, secrets, validation
-│   │   ├── architecture.md            #   VSA, dependencies, module design
-│   │   ├── ai-workflow.md             #   JIT reading, delegation, context
-│   │   ├── api/
-│   │   │   └── api-patterns.md        #   Path-targeted: REST design, pagination
-│   │   └── frontend/
-│   │       └── ui-patterns.md         #   Path-targeted: UI design patterns
-│   ├── skills/                        # 16 auto-detected skills (5 custom + 11 ecosystem)
-│   │   ├── context-management/        #   Context window optimization
-│   │   ├── claude-api/                #   🌐 anthropics/skills — Claude API & SDK patterns
-│   │   ├── frontend-design/           #   🌐 anthropics/skills — Production-grade UI design
-│   │   ├── mcp-builder/               #   🌐 anthropics/skills — Build MCP servers
-│   │   ├── skill-creator/             #   🌐 anthropics/skills — Create & test skills with evals
-│   │   ├── webapp-testing/            #   🌐 anthropics/skills — Playwright web app testing
-│   │   ├── systematic-debugging/      #   🌐 obra/superpowers — Hypothesis-driven debugging (30K)
-│   │   ├── subagent-driven-development/ # 🌐 obra/superpowers — Parallel subagent patterns (19K)
-│   │   ├── code-refactoring/          #   🌐 supercent-io — Safe code restructuring (10.8K)
-│   │   ├── task-planning/             #   🌐 supercent-io — Task planning & decomposition (10.6K)
-│   │   ├── tdd/                       #   🌐 mattpocock/skills — Test-driven development (3.3K)
-│   │   ├── grill-me/                  #   🌐 mattpocock/skills — Plan stress-testing interviews
-│   │   ├── write-a-prd/               #   🌐 mattpocock/skills — PRD through user interview
-│   │   ├── prd-to-issues/             #   🌐 mattpocock/skills — Break PRDs into GitHub issues
-│   │   ├── improve-codebase-architecture/ # 🌐 mattpocock/skills — Architecture improvement RFCs
-│   │   └── web-design-guidelines/     #   🌐 vercel-labs — UI review (100+ rules, 164K)
-│   └── mcp-templates/                 # 7 MCP server configs
-│       ├── fetch.json                 #   Web content fetching
-│       ├── filesystem.json            #   Extended file operations
-│       ├── github.json                #   GitHub API integration
-│       ├── memory.json                #   Persistent memory
-│       ├── playwright.json            #   Browser automation
-│       ├── postgres.json              #   PostgreSQL access
-│       └── supabase.json              #   Supabase management
-├── docs/                              # Documentation
-│   ├── GETTING-STARTED.md             #   Installation and first feature
-│   ├── COMMANDS-REFERENCE.md          #   All 16 commands detailed
-│   ├── ANTI-PATTERNS.md              #   Common mistakes and how to avoid them
-│   ├── ARCHITECTURE-GUIDE.md          #   5-layer stack, subagents, VSA
-│   ├── CUSTOMIZATION.md              #   Add rules, commands, skills, agents, hooks
-│   ├── TROUBLESHOOTING.md            #   Common issues and platform fixes
-│   └── FAQ.md                         #   Frequently asked questions
-└── templates/                         # Injectable specializations
-    ├── rules/                         # 6 framework-specific rule templates
-    │   ├── nextjs.md                  #   Next.js 15+, React 19+, Tailwind v4
-    │   ├── fastapi.md                 #   FastAPI, Pydantic 2.x, Python 3.12+
-    │   ├── cli-tool.md                #   CLI applications
-    │   ├── ai-agents.md              #   LLM-powered applications
-    │   ├── hono.md                    #   Hono 4.x+ edge-first API patterns
-    │   └── react-native.md            #   React Native / Expo SDK 52+
-    └── skills/                        # 10 framework-specific skill templates (2 custom + 8 ecosystem)
-        ├── agent-development/         #   Tool design, MCP, prompting
-        ├── edge-api/                  #   Edge API patterns
-        ├── vercel-react-best-practices/ # 🌐 vercel-labs — React/Next.js perf (40+ rules, 208K)
-        ├── vercel-composition-patterns/ # 🌐 vercel-labs — Component composition patterns
-        ├── nextjs-app-router-patterns/  # 🌐 wshobson/agents — Next.js App Router (8.3K)
-        ├── fastapi-templates/           # 🌐 wshobson/agents — FastAPI patterns (6.4K)
-        ├── python-performance-optimization/ # 🌐 wshobson/agents — Python perf (8.9K)
-        ├── python-testing-patterns/     # 🌐 wshobson/agents — Python testing (7.1K)
-        ├── api-design/                  # 🌐 supercent-io — REST API design (10.8K)
-        └── database-schema-design/      # 🌐 supercent-io — Schema design (11K)
+│   ├── settings.json             # Permissions (allow/ask/deny), hooks, MCP
+│   ├── agents/                   # 5 subagents (researcher, planner, code-reviewer, validator, investigator)
+│   ├── commands/                 # 16 slash commands
+│   ├── hooks/                    # 5 hooks (safety + automation)
+│   ├── rules/                    # 8 auto-loaded rules (+ path-targeted for api/, frontend/)
+│   ├── skills/                   # 16 auto-detected skills (5 custom + 11 ecosystem)
+│   └── mcp-templates/            # 7 MCP server configs
+├── docs/                         # Documentation (8 guides)
+└── templates/                    # Injectable specializations
+    ├── rules/                    # 6 framework-specific rule templates
+    └── skills/                   # 10 framework-specific skill templates
 ```
 
----
-
-## Templates
-
-### Rule Templates
-
-| Template | Framework | Key Topics |
-|----------|-----------|------------|
-| `nextjs.md` | Next.js 15+ | App Router, Server/Client Components, React 19, Tailwind v4 |
-| `fastapi.md` | FastAPI 0.115+ | Pydantic 2.x, SQLAlchemy 2.0, async patterns, Python 3.12+ |
-| `cli-tool.md` | CLI apps | Argument parsing, output formatting, exit codes |
-| `ai-agents.md` | AI/LLM | Tool design, prompt engineering, MCP integration |
-| `hono.md` | Hono 4.x+ | Edge-first API patterns, middleware, TypeScript |
-| `react-native.md` | React Native / Expo | Expo SDK 52+, React Native 0.76+ |
-
-### Skill Templates
-
-| Template | Source | Focus |
-|----------|--------|-------|
-| `vercel-react-best-practices/` | 🌐 vercel-labs/agent-skills | React/Next.js perf (40+ rules, 208K installs) |
-| `vercel-composition-patterns/` | 🌐 vercel-labs/agent-skills | Component composition that scales |
-| `nextjs-app-router-patterns/` | 🌐 wshobson/agents | Next.js 15+ App Router patterns (8.3K installs) |
-| `fastapi-templates/` | 🌐 wshobson/agents | FastAPI route patterns (6.4K installs) |
-| `python-performance-optimization/` | 🌐 wshobson/agents | Python performance (8.9K installs) |
-| `python-testing-patterns/` | 🌐 wshobson/agents | Python testing patterns (7.1K installs) |
-| `api-design/` | 🌐 supercent-io/skills-template | REST API design patterns (10.8K installs) |
-| `database-schema-design/` | 🌐 supercent-io/skills-template | Schema design, migrations (11K installs) |
-| `agent-development/` | Custom | Tool design, prompt engineering, MCP |
-| `edge-api/` | Custom | Edge API patterns |
+See [Architecture Guide](docs/ARCHITECTURE-GUIDE.md) for the full 5-layer stack explanation, subagent security design, and detailed structure.
 
 ---
 
@@ -385,26 +160,15 @@ claude-code-starter-kit/
 
 ---
 
-## Design Principles
-
-1. **Context is King** — Every file maximizes relevant context with minimum token waste
-2. **Deterministic Safety** — Hooks block dangerous operations 100% of the time
-3. **One-Pass Success** — Plans contain ALL information needed for first-try implementation
-4. **Universal Core, Targeted Templates** — Core rules work for any JS/TS or Python project; specializations are injected
-5. **Progressive Disclosure** — Start with `/setup`, learn commands as needed, customize over time
-6. **Agent-First Design** — Subagents handle parallel research and validation, keeping main context clean
-7. **Progressive Depth** — Skills load overview first, deep references only when needed
-
----
-
 ## Documentation
 
 | Document | Description |
 |----------|-------------|
 | [Getting Started](docs/GETTING-STARTED.md) | Installation, first feature, first bug fix |
+| [Workflow Guide](docs/WORKFLOW-GUIDE.md) | Agentic coding methodology, best practices, feedback loops |
 | [Commands Reference](docs/COMMANDS-REFERENCE.md) | All 16 commands with INPUT/PROCESS/OUTPUT and allowed tools |
-| [Architecture Guide](docs/ARCHITECTURE-GUIDE.md) | 5-layer stack, subagents, VSA, context engineering, migration |
-| [Customization](docs/CUSTOMIZATION.md) | Add rules, commands, skills, subagents, hooks, MCP servers |
+| [Architecture Guide](docs/ARCHITECTURE-GUIDE.md) | 5-layer stack, subagents, design principles, VSA, context engineering |
+| [Customization](docs/CUSTOMIZATION.md) | Add rules, commands, skills, subagents, hooks, templates, MCP servers |
 | [Troubleshooting](docs/TROUBLESHOOTING.md) | Common issues, permissions, platform-specific fixes |
 | [FAQ](docs/FAQ.md) | Answers to frequently asked questions |
 | [Anti-Patterns](docs/ANTI-PATTERNS.md) | Common mistakes when working with Claude Code |

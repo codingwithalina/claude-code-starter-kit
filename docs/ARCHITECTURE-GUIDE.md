@@ -121,7 +121,7 @@ Claude Code operates within a context window. Every file read, every tool output
 
 1. **Just-In-Time Reading** — Read files when needed, not "just in case"
 2. **Targeted Search** — Use grep/glob before reading entire files
-3. **Sub-Agent Delegation** — Offload research to sub-agents to keep main context clean
+3. **Subagent Delegation** — Offload research to subagents to keep main context clean
 4. **Plan Before Edit** — Know all files you'll touch before opening any
 5. **Progressive Depth** — Skim → Scan → Read → Deep Dive (only go deeper when needed)
 
@@ -185,6 +185,18 @@ your-project/
 | Types | Central definitions | Single source of truth |
 | Config | Environment variables | No secrets in code |
 | Plans | `.plans/` directory | Persistent, referenceable |
+
+---
+
+## Design Principles
+
+1. **Context is King** — Every file maximizes relevant context with minimum token waste
+2. **Deterministic Safety** — Hooks block dangerous operations 100% of the time
+3. **One-Pass Success** — Plans contain ALL information needed for first-try implementation
+4. **Universal Core, Targeted Templates** — Core rules work for any JS/TS or Python project; specializations are injected via templates
+5. **Progressive Disclosure** — Start with `/setup`, learn commands as needed, customize over time
+6. **Agent-First Design** — Subagents handle parallel research and validation, keeping main context clean
+7. **Progressive Depth** — Skills load overview first, deep references only when needed
 
 ---
 

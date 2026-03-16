@@ -18,7 +18,7 @@ if [ -z "$cmd" ]; then
 fi
 
 # Block destructive commands
-if echo "$cmd" | grep -qE '(rm -rf /|rm -rf ~|rm -rf \.|git push --force|git push -f |git reset --hard|git clean -fd|DROP TABLE|DROP DATABASE|> /dev/sd|mkfs\.|:\(\)\{|curl.*\| *bash|wget.*\| *bash|chmod 777)'; then
+if echo "$cmd" | grep -qE '(rm -rf /|rm -rf ~|rm -rf \.|git push --force|git push -f |git reset --hard|git clean -fd|DROP TABLE|DROP DATABASE|> /dev/sd|mkfs\.|:\(\)\{|curl.*\| *(bash|sh)|wget.*\| *(bash|sh)|chmod 777)'; then
   echo '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Blocked: This command matches a dangerous pattern. Review and run manually if intended."}}'
   exit 0
 fi

@@ -23,7 +23,7 @@ tools:
 maxTurns: 20
 color: orange
 skills:
-  - debugging
+  - systematic-debugging
 ---
 
 # Role
