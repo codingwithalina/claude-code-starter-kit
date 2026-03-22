@@ -192,7 +192,7 @@ your-project/
 1. **Context is King** — Every file maximizes relevant context with minimum token waste
 2. **Deterministic Safety** — Hooks block dangerous operations 100% of the time
 3. **One-Pass Success** — Plans contain ALL information needed for first-try implementation
-4. **Universal Core, Targeted Templates** — Core rules work for any JS/TS or Python project; specializations are injected via templates
+4. **Universal Core, Targeted Templates** — Core rules work for any JS/TS or Python project; specializations (framework, database, ORM, UI) are injected via templates and community skills
 5. **Progressive Disclosure** — Start with `/setup`, learn commands as needed, customize over time
 6. **Agent-First Design** — Subagents handle parallel research and validation, keeping main context clean
 7. **Progressive Depth** — Skills load overview first, deep references only when needed

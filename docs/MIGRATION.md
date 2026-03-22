@@ -32,7 +32,10 @@ git clone https://github.com/medevs/claude-code-starter-kit.git /tmp/claude-star
 # From your project root
 cp -r /tmp/claude-starter-kit/.claude/ .claude/
 cp /tmp/claude-starter-kit/.claudeignore .claudeignore
+cp /tmp/claude-starter-kit/.gitattributes .gitattributes
 ```
+
+The `.gitattributes` file normalizes line endings to LF for all source files — critical for preventing CRLF issues on Windows.
 
 The `.claudeignore` file excludes dependencies, build artifacts, and binaries from Claude's context window — saving 30-100K tokens for typical projects.
 
@@ -95,6 +98,7 @@ Example merge:
 @.claude/rules/security.md
 @.claude/rules/architecture.md
 @.claude/rules/ai-workflow.md
+@.claude/rules/known-issues.md
 
 ## Core Principles
 <!-- From starter kit -->
@@ -149,7 +153,7 @@ rm -rf /tmp/claude-starter-kit
 
 Commit the integration:
 ```bash
-git add .claude/ .claudeignore CLAUDE.md templates/ docs/
+git add .claude/ .claudeignore .gitattributes CLAUDE.md templates/ docs/
 git commit -m "chore: integrate claude-code-starter-kit"
 ```
 

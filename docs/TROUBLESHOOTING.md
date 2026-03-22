@@ -121,11 +121,31 @@ Edit `.claude/settings.json`. Tool patterns use the format:
 5. After PATH changes, restart your terminal and Claude Code
 6. As a workaround, you can disable hooks by removing the `hooks` entries from `.claude/settings.json` — but this removes safety guardrails
 
+### CRLF / Line Ending Warnings
+
+**Symptom**: Git shows warnings like `CRLF will be replaced by LF the next time Git touches it` when staging files.
+
+**Fix**:
+1. The starter kit includes a `.gitattributes` file that normalizes line endings to LF for all source files
+2. If you're seeing these warnings, the file was created with CRLF endings (common on Windows) and `.gitattributes` is correcting them — this is expected and will stop after the first commit
+3. If you're starting a new project with `/setup`, `.gitattributes` is created automatically
+4. For existing projects, copy `.gitattributes` from the starter kit root
+
+### Known Issues Not Being Checked
+
+**Symptom**: Plans keep making the same mistakes (wrong API methods, deprecated patterns).
+
+**Fix**:
+1. Add the recurring issue to `.claude/rules/known-issues.md` — it's auto-loaded every session
+2. The `/plan` command checks this file during Phase 2.5 (API Verification)
+3. Include: what went wrong, what the fix is, and how to avoid it
+
 ## Platform-Specific Issues
 
 ### Windows
 
 - **Use Git Bash or WSL**, not PowerShell or CMD — hooks are bash scripts
+- The kit includes `.gitattributes` to normalize line endings — CRLF warnings on first commit are expected
 - If hooks fail with "permission denied", run: `chmod +x .claude/hooks/*.sh` in Git Bash
 - Path separators: hooks use forward slashes (`/`) — Git Bash handles this automatically
 - If `npx` commands hang, try `npx.cmd` or install packages globally first

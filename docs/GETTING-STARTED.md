@@ -47,15 +47,20 @@ claude
 
 This is the most important step. `/setup` will:
 1. **Detect your tech stack** from config files (package.json, pyproject.toml, etc.) or ask you
-2. **Ask your architecture preference** (Vertical Slice, Clean Architecture, or Simple)
-3. **Detect your package manager** and tools from lock files and configs
-4. **Offer MCP integrations** (Playwright, Supabase, GitHub, PostgreSQL, Memory, Fetch, Filesystem)
-5. **Populate CLAUDE.md** with your project's tech stack, dev commands, and directory structure
-6. **Copy matching templates** — framework-specific rules and skills from `templates/` into `.claude/`
-7. **Configure MCP servers** if you selected any
-8. **Verify** by running `/prime` to confirm everything loaded
+2. **Ask about database & ORM** (Supabase, PostgreSQL+Prisma, PostgreSQL+Drizzle, SQLite+Drizzle, SQLite+Prisma, or none)
+3. **Ask about UI library** (shadcn/ui + Tailwind, Tailwind only, or none) — for frontend projects
+4. **Ask your architecture preference** (Vertical Slice, Clean Architecture, or Simple)
+5. **Detect your package manager** and tools from lock files and configs
+6. **Offer MCP integrations** (Playwright, Supabase, GitHub, PostgreSQL, Memory, Fetch, Filesystem)
+7. **Scaffold the project** if starting from scratch (handles `create-next-app` temp-dir workaround, FastAPI boilerplate, etc.)
+8. **Populate CLAUDE.md** with your project's tech stack, dev commands, and directory structure
+9. **Copy matching templates** — framework-specific rules and skills from `templates/` into `.claude/`
+10. **Install community skills** — stack-specific skills via `npx skills add` (Next.js, Supabase, Prisma, shadcn/ui, LangChain)
+11. **Create `.env.example`** with relevant environment variables for your stack
+12. **Configure MCP servers** if you selected any
+13. **Verify** by running `/prime` to confirm everything loaded
 
-**Expected**: A summary showing your configuration, active rules, available skills, and all 16 commands.
+**Expected**: A summary showing your configuration (including database, ORM, and UI selections), active rules, available skills, community skills installed, and all 16 commands.
 
 **If this fails**: See [Troubleshooting — /setup not detecting framework](./TROUBLESHOOTING.md#setup-not-detecting-framework).
 
@@ -85,7 +90,7 @@ Walk through the full workflow with `/build`:
 1. **Prime** — Claude analyzes your project structure, tech stack, and conventions
 2. **Plan** — Creates a plan at `.plans/add-a-hello-world-api-endpoint.md` with tasks, patterns, and validation commands
 3. **Execute** — Implements the endpoint, following your project's patterns, and creates tests
-4. **Validate** — Runs lint, type check, tests, and build
+4. **Validate** — Runs lint, type check, tests, and coverage check (quick mode during `/build`)
 5. **Commit** — Creates an atomic commit: `feat(api): add hello world endpoint`
 
 **Expected output**:

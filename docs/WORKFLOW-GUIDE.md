@@ -40,20 +40,22 @@ Each step must pass a gate before the next begins. `/build` automates the entire
 ## Validation Pyramid
 
 ```
-         ┌───────────┐
-         │   Build   │   Can it compile/bundle?
-        ┌┴───────────┴┐
-        │    Tests    │   Does it behave correctly?
-       ┌┴─────────────┴┐
-       │  Type Checks  │   Are types consistent?
-      ┌┴───────────────┴┐
-      │     Linting     │   Does it follow conventions?
-     ┌┴─────────────────┴┐
-     │   Code Review     │   Is it maintainable?
-     └───────────────────┘
+          ┌───────────┐
+          │   Build   │   Can it compile/bundle?        (full mode only)
+         ┌┴───────────┴┐
+         │  Coverage   │   Are new files ≥80%?           (warning, not blocking)
+        ┌┴─────────────┴┐
+        │    Tests      │   Does it behave correctly?
+       ┌┴───────────────┴┐
+       │  Type Checks    │   Are types consistent?
+      ┌┴─────────────────┴┐
+      │     Linting       │   Does it follow conventions?
+     ┌┴───────────────────┴┐
+     │   Code Review       │   Is it maintainable?
+     └─────────────────────┘
 ```
 
-`/validate` runs the top four levels automatically. `/review` adds the human-quality code review layer. Together they catch issues at every level before code is committed.
+`/validate quick` runs lint, types, tests, and coverage. `/validate full` adds build and runtime checks. `/review` adds the human-quality code review layer. Together they catch issues at every level before code is committed.
 
 ---
 
@@ -76,9 +78,10 @@ After each feature:
 
 1. `/execution-report` compares the plan against what was actually built — captures divergences, challenges, and lessons learned
 2. `/system-review` analyzes the process and suggests concrete improvements to CLAUDE.md, command templates, and workflows
-3. Apply the improvements so the next iteration is better
+3. Add recurring gotchas to `.claude/rules/known-issues.md` — this file is auto-loaded every session and checked during `/plan`
+4. Apply the improvements so the next iteration is better
 
-This is how the kit gets smarter over time. The system improves itself.
+This is how the kit gets smarter over time. The `known-issues.md` file captures project-specific lessons, while `/system-review` improves the process itself.
 
 ---
 

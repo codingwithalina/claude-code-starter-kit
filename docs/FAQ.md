@@ -16,7 +16,13 @@ Any developer using Claude Code who wants:
 
 ### What languages does it support?
 
-The kit is focused on **JavaScript/TypeScript and Python** projects. Framework-specific behavior is injected through templates during `/setup` — choose Next.js, FastAPI, CLI tools, or AI agents, or use the "Custom" option for any JS/TS or Python project.
+The kit is focused on **JavaScript/TypeScript and Python** projects with broad stack support:
+- **Frameworks**: Next.js, FastAPI, CLI tools, AI Agents (or Custom for Express, Hono, etc.)
+- **Databases**: Supabase, PostgreSQL, SQLite
+- **ORMs**: Prisma, Drizzle
+- **UI**: shadcn/ui, Tailwind CSS
+
+Framework-specific behavior is injected through templates during `/setup`, which also asks about your database, ORM, and UI preferences.
 
 ### Do I need to use all of it?
 
@@ -191,16 +197,26 @@ Or run `/setup` and select the servers you want — it handles the configuration
 |----------|-----------|
 | `nextjs.md` | Next.js 15+, React 19+, App Router, Tailwind v4 |
 | `fastapi.md` | FastAPI 0.115+, Pydantic 2.x, Python 3.12+ |
+| `express.md` | Express.js REST APIs |
 | `cli-tool.md` | CLI applications |
 | `ai-agents.md` | LLM-powered applications |
+| `hono.md` | Hono 4.x+ edge-first APIs |
+| `react-native.md` | React Native / Expo |
+| `supabase.md` | Supabase (Auth, RLS, database queries, Edge Functions) |
+| `prisma.md` | Prisma ORM 7.x+ (schema, migrations, queries) |
+| `drizzle.md` | Drizzle ORM 0.35+ (sync/async drivers, migrations) |
+| `shadcn-ui.md` | shadcn/ui (Tailwind v4, OKLCH, forms, dark mode) |
 
-**Skill templates** (in `templates/skills/`):
-| Template | Focus |
-|----------|-------|
-| `react-patterns/` | React 19, hooks, composition, Server Components |
-| `api-design/` | REST conventions, validation, pagination |
-| `database/` | Schema design, migrations, query optimization |
-| `agent-development/` | Tool design, prompt engineering, MCP |
+**Community skill templates** (in `templates/skills/`, installed by `/setup` based on stack):
+| Source | Skills |
+|--------|--------|
+| `vercel-labs/next-skills` | next-best-practices, next-cache-components, next-upgrade |
+| `supabase/agent-skills` | supabase-postgres-best-practices |
+| `prisma/skills` | prisma-cli, prisma-client-api, prisma-database-setup, prisma-upgrade-v7, + more |
+| `shadcn/ui` | shadcn (component patterns, CLI, theming) |
+| `langchain-ai/langchain-skills` | langchain-fundamentals, langgraph-fundamentals, deep-agents, + more |
+
+Install additional skills: `npx skills add <owner/repo>` — browse at https://skills.sh
 
 ### How do I request a new template?
 

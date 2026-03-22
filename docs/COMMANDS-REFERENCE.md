@@ -62,8 +62,9 @@ The five core commands that form the Plan-Implement-Validate workflow.
 **PROCESS**:
 1. Extract feature requirements, user value, and complexity
 2. Gather codebase intelligence (patterns, dependencies, test conventions) — uses subagents for parallel research on large codebases
-3. Research external documentation and best practices
-4. Map affected files, dependencies, and order of operations
+3. Verify API assumptions — check installed versions in package.json/pyproject.toml, verify method signatures exist, check `.claude/rules/known-issues.md` for project-specific gotchas
+4. Research external documentation and best practices
+5. Map affected files, dependencies, and order of operations
 5. Decompose into phased, atomic tasks with validation commands
 6. Assess risks and score confidence (1-10)
 
@@ -109,30 +110,36 @@ The five core commands that form the Plan-Implement-Validate workflow.
 
 ---
 
-### `/validate`
+### `/validate [quick|full]`
 
 | | |
 |---|---|
-| **Purpose** | Run all project validation checks |
-| **Usage** | `/validate` |
+| **Purpose** | Run project validation checks (quick or full mode) |
+| **Usage** | `/validate` or `/validate quick` or `/validate full` |
 | **Allowed Tools** | `Read, Bash, Glob, Grep` |
 
-**INPUT**: Project config files (package.json, pyproject.toml, CLAUDE.md dev commands).
+**INPUT**: Project config files (package.json, pyproject.toml, CLAUDE.md dev commands). Optional mode argument.
+
+**Modes**:
+- `quick` (default during `/execute`, or no argument) — Levels 1-3b: lint, types, tests, coverage check
+- `full` (default when standalone or in `/build`) — All 5 levels including build and runtime
 
 **PROCESS**:
 1. Detect project tools from CLAUDE.md or config files
-2. Run lint & format check (eslint, biome, ruff, prettier)
-3. Run type checking (tsc, mypy, pyright)
-4. Run test suite (vitest, jest, pytest)
-5. Run build (npm run build, pnpm build, python -m build)
+2. **Level 1**: Run lint & format check (eslint, biome, ruff, prettier)
+3. **Level 2**: Run type checking (tsc, mypy, pyright)
+4. **Level 3**: Run test suite (vitest, jest, pytest)
+5. **Level 3b**: Run coverage check — report files below 80% threshold (WARN, not blocking)
+6. **Level 4** *(full mode only)*: Run build (npm run build, pnpm build, python -m build)
+7. **Level 5** *(full mode only)*: Runtime validation — start dev server, smoke test, stop
 
-**OUTPUT**: Pass/fail table for each check with failure details. Does NOT auto-fix — suggests running `/code-review-fix` or manual fixes.
+**OUTPUT**: Pass/fail table for each check with failure details and mode indicator. Does NOT auto-fix — suggests running `/code-review-fix` or manual fixes.
 
 **Example**:
 ```
-/validate
-→ Lint: ✅ PASS | Types: ✅ PASS | Tests: ✅ 42/42 | Build: ✅ PASS
-→ Overall: ✅ ALL PASSING
+/validate quick
+→ Lint: ✅ PASS | Types: ✅ PASS | Tests: ✅ 42/42 | Coverage: ⚠️ 2 files below 80%
+→ Mode: quick | Overall: ✅ PASS
 ```
 
 ---
@@ -188,6 +195,7 @@ The five core commands that form the Plan-Implement-Validate workflow.
 Each step must pass its gate before the next begins:
 - **Prime gate**: Clear understanding of the project
 - **Plan gate**: Confidence score ≥ 7/10
+- **Complexity gate**: Low → auto-proceed; Medium → show summary, wait for "proceed"; High → show summary + risks, always pause
 - **Execute gate**: All tasks complete with per-task validation
 - **Validate gate**: All checks pass with zero errors
 
@@ -219,13 +227,17 @@ Each step must pass its gate before the next begins:
 
 **PROCESS**:
 1. Detect or ask tech stack (Next.js, FastAPI, CLI, AI Agent, Custom)
-2. Ask architecture preference (VSA, Clean, Simple)
-3. Detect package manager and tools from lock files and configs
-4. Offer MCP server integrations (Playwright, Supabase, GitHub, PostgreSQL, Memory, Fetch, Filesystem)
-5. Populate CLAUDE.md, copy matching rule and skill templates, configure MCP
-6. Verify setup with `/prime`
+2. Ask database & ORM preference (Supabase, PostgreSQL+Prisma, PostgreSQL+Drizzle, SQLite+Drizzle, SQLite+Prisma, none)
+3. Ask UI library preference (shadcn/ui + Tailwind, Tailwind only, none) — for frontend projects
+4. Ask architecture preference (VSA, Clean, Simple)
+5. Detect package manager and tools from lock files and configs
+6. Scaffold project if greenfield (handles `create-next-app` temp-dir workaround, FastAPI boilerplate, etc.)
+7. Offer MCP server integrations (Playwright, Supabase, GitHub, PostgreSQL, Memory, Fetch, Filesystem)
+8. Populate CLAUDE.md, copy matching rule and skill templates, create `.env.example`, create `.gitattributes`
+9. Install community skills via `npx skills add` based on stack selections
+10. Verify setup with `/prime`
 
-**OUTPUT**: Setup summary with project configuration, files modified, available commands, and next steps.
+**OUTPUT**: Setup summary with project configuration (including DB, ORM, UI), files modified, community skills installed, available commands, and next steps.
 
 ---
 
@@ -450,7 +462,7 @@ Namespaced under `bugfix/` directory — a pattern for grouping related commands
 | `/prime` | — | Read, Glob, Grep, Bash(git) | Console |
 | `/plan` | `<feature>` | Read, Write, Glob, Grep, Bash(git), Agent | `.plans/{name}.md` |
 | `/execute` | `<plan-file>` | Read, Write, Edit, Bash, Glob, Grep, Agent | Console |
-| `/validate` | — | Read, Bash, Glob, Grep | Console |
+| `/validate` | `[quick\|full]` | Read, Bash, Glob, Grep | Console |
 | `/commit` | — | Read, Grep, Bash(git) | Git commit |
 | `/build` | `<feature>` | Read, Write, Edit, Bash, Glob, Grep, Agent | `.plans/` + Git commit |
 | `/setup` | — | Read, Write, Edit, Bash, Glob, Grep | CLAUDE.md + configs |

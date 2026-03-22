@@ -26,21 +26,21 @@ Any developer using Claude Code who wants a repeatable workflow instead of ad-ho
 
 ## What You Get
 
-16 commands, 8 rules, 18 skills, 5 subagents, 4 hooks — all pre-configured.
+16 commands, 9 rules, 16 skills, 5 subagents, 4 hooks — all pre-configured.
 
 | Category | Count | Details |
 |----------|-------|---------|
 | Slash commands | 16 | 5 core + 1 pipeline + 8 extended + 2 bugfix |
-| Rules | 8 | 6 universal + 2 path-targeted (api/, frontend/) |
-| Skills | 18 | 5 custom + 13 from ecosystem (anthropics, vercel, obra, supercent, mattpocock, mindrally, bobmatnyc) |
+| Rules | 9 | 6 universal + known-issues + 2 path-targeted (api/, frontend/) |
+| Skills | 16 | 5 custom + 11 from ecosystem (anthropics, vercel, obra, supercent, mattpocock) |
 | Subagents | 5 | 1 haiku (fast research) + 4 sonnet (reasoning) |
 | Safety hooks | 4 | Command blocker, auto-formatter, auto-linter, branch protection |
 | Permission tiers | 3 | allow / ask / deny in settings.json |
 | MCP templates | 7 | Playwright, Supabase, GitHub, PostgreSQL, Memory, Fetch, Filesystem |
-| Rule templates | 7 | Next.js, Express, FastAPI, CLI, AI Agents, Hono, React Native |
-| Skill templates | 10 | 2 custom + 8 from ecosystem (vercel, wshobson, supercent) |
+| Rule templates | 11 | Next.js, Express, FastAPI, CLI, AI Agents, Hono, React Native, Supabase, Prisma, Drizzle, shadcn/ui |
+| Skill templates | 34 | 2 custom + 10 existing + 22 community (vercel, supabase, prisma, shadcn, langchain) |
 
-**JS/TS + Python focused** with injectable specializations for web apps, APIs, CLIs, and AI agents.
+**Supported stacks**: Next.js, FastAPI, CLI tools, AI Agents — with database support (Supabase, PostgreSQL, SQLite), ORM support (Prisma, Drizzle), and UI support (shadcn/ui, Tailwind CSS). JS/TS + Python focused.
 
 ---
 
@@ -61,7 +61,7 @@ claude
 /build add user authentication
 ```
 
-**What just happened?** `/setup` detected your tech stack, configured CLAUDE.md, and copied matching templates. `/build` chained five commands — prime, plan, execute, validate, commit — to deliver a planned, implemented, tested, and committed feature.
+**What just happened?** `/setup` detected your tech stack, asked about your database/ORM and UI preferences, configured CLAUDE.md, copied matching templates, and installed community skills. `/build` chained five commands — prime, plan, execute, validate, commit — to deliver a planned, implemented, tested, and committed feature.
 
 See [Getting Started](docs/GETTING-STARTED.md) for the full walkthrough with expected output at each step.
 
@@ -93,7 +93,7 @@ See [Workflow Guide](docs/WORKFLOW-GUIDE.md) for the full methodology: two-tier 
 | `/prime` | Load codebase context | Console summary |
 | `/plan <feature>` | Create implementation plan | `.plans/{name}.md` |
 | `/execute <plan>` | Implement from plan | Console report |
-| `/validate` | Run lint, types, tests, build | Pass/fail table |
+| `/validate [quick\|full]` | Run lint, types, tests, coverage, build | Pass/fail table |
 | `/commit` | Atomic conventional commit | Git commit |
 | `/build <feature>` | Full pipeline (all above) | Plan + commit |
 | `/setup` | Project initialization wizard | CLAUDE.md + configs |
@@ -116,19 +116,20 @@ See [Commands Reference](docs/COMMANDS-REFERENCE.md) for INPUT/PROCESS/OUTPUT do
 ```
 claude-code-starter-kit/
 ├── CLAUDE.md                     # Root rules (<200 lines, @imports)
+├── .gitattributes                # Line ending normalization (LF for source, CRLF fix)
 ├── .claudeignore                 # Excludes deps, builds, binaries from context
 ├── .claude/
 │   ├── settings.json             # Permissions (allow/ask/deny), hooks, MCP
 │   ├── agents/                   # 5 subagents (researcher, planner, code-reviewer, validator, investigator)
 │   ├── commands/                 # 16 slash commands
 │   ├── hooks/                    # 4 hooks (safety + automation)
-│   ├── rules/                    # 8 auto-loaded rules (+ path-targeted for api/, frontend/)
+│   ├── rules/                    # 9 auto-loaded rules (+ path-targeted for api/, frontend/)
 │   ├── skills/                   # 16 auto-detected skills (5 custom + 11 ecosystem)
 │   └── mcp-templates/            # 7 MCP server configs
-├── docs/                         # Documentation (8 guides)
+├── docs/                         # Documentation (9 guides)
 └── templates/                    # Injectable specializations
-    ├── rules/                    # 6 framework-specific rule templates
-    └── skills/                   # 10 framework-specific skill templates
+    ├── rules/                    # 11 framework-specific rule templates
+    └── skills/                   # 34 framework-specific skill templates
 ```
 
 See [Architecture Guide](docs/ARCHITECTURE-GUIDE.md) for the full 5-layer stack explanation, subagent security design, and detailed structure.
