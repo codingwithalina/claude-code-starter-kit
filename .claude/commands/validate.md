@@ -7,6 +7,12 @@ allowed-tools: Read, Bash, Glob, Grep
 
 Run all validation commands to ensure the project is in a healthy state.
 
+## Mode
+
+- `quick` or no argument → Level 1 (lint) + Level 2 (types) + Level 3 (tests) + Level 3b (coverage)
+- `full` → All 5 levels including build and runtime
+- Default: `quick` during /execute, `full` when standalone or in /build
+
 ## Process
 
 ### 1. Detect Project Tools
@@ -37,12 +43,21 @@ Run the full test suite.
 
 **Expected**: All tests pass.
 
-#### Level 4: Build
+#### Level 3b: Coverage Check
+If coverage tooling is available (`vitest --coverage`, `jest --coverage`, `pytest --cov`):
+- Run tests with coverage enabled
+- Parse coverage for new/changed files (use `git diff --name-only` to identify changed files)
+- Report files below 80% threshold
+- **Status**: WARN (not blocking) — flag for visibility, do not fail the validation
+
+If no coverage tooling is configured, skip this level silently.
+
+#### Level 4: Build *(full mode only)*
 Run the build command to verify the project compiles/bundles.
 
 **Expected**: Build succeeds without errors.
 
-#### Level 5: Runtime Validation (if applicable)
+#### Level 5: Runtime Validation *(full mode only, if applicable)*
 If the project has a dev server or runtime entry point:
 - Start it in background
 - Run smoke test (health endpoint, CLI help, basic execution)
@@ -61,9 +76,11 @@ Skip if no runtime validation is configured in CLAUDE.md.
 | Lint        | ✅/❌  | [output summary]     |
 | Type Check  | ✅/❌  | [output summary]     |
 | Tests       | ✅/❌  | [X passed, Y failed] |
-| Build       | ✅/❌  | [output summary]     |
+| Coverage    | ✅/⚠️  | [X% avg, files below 80%] |
+| Build       | ✅/❌/⏭️ | [output summary or "skipped (quick mode)"] |
 
 **Overall: ✅ PASS / ❌ FAIL**
+**Mode: quick / full**
 ```
 
 ### 4. If Failures Detected

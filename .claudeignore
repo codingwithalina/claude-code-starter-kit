@@ -33,6 +33,10 @@ yarn.lock
 .DS_Store
 Thumbs.db
 
+# Large reference docs (loaded on demand via researcher agents)
+GUIDE.md
+docs/
+
 # Large binary files
 *.png
 *.jpg

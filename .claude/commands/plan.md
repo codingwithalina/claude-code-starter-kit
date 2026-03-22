@@ -60,6 +60,19 @@ So that <benefit/value>
 
 **If requirements are unclear, ASK the user before continuing.**
 
+### Phase 2.5: Verify API Assumptions
+
+Before writing the plan, verify critical API details against the actual codebase:
+
+1. **Check installed versions**: read `package.json` or `pyproject.toml` for exact versions
+2. **Check `.claude/rules/known-issues.md`** for project-specific gotchas
+3. **For key library APIs used in the plan, verify method signatures exist:**
+   - Read type definitions or check the library's exports
+   - If uncertain, delegate to a researcher agent to verify
+4. In each task, note: **API_VERIFIED**: [library@version — method confirmed]
+
+Do NOT write plans from memory alone when library-specific APIs are involved.
+
 ### Phase 3: External Research
 
 **Use sub-agents for documentation gathering:**

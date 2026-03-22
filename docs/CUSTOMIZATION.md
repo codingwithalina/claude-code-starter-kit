@@ -423,6 +423,29 @@ Templates in `templates/` are framework-specific rules and skills that get copie
 | `ai-agents.md` | AI/LLM | Tool design, prompt engineering, MCP integration |
 | `hono.md` | Hono 4.x+ | Edge-first API patterns, middleware, TypeScript |
 | `react-native.md` | React Native / Expo | Expo SDK 52+, React Native 0.76+ |
+| `supabase.md` | Supabase | Client setup, Auth, RLS, database queries, Edge Functions |
+| `prisma.md` | Prisma ORM 7.x+ | Schema, migrations, queries, relations, transactions |
+| `drizzle.md` | Drizzle ORM 0.35+ | Schema, driver patterns (sync/async), migrations |
+| `shadcn-ui.md` | shadcn/ui | Components, Tailwind v4, forms, dark mode, OKLCH colors |
+
+### Recommended Community Skills
+
+Skills are installed by `/setup` based on your stack selection. You can also install them manually.
+
+**Already in kit (always available):**
+- `anthropics/skills` — claude-api, frontend-design, mcp-builder, skill-creator, webapp-testing
+- `vercel-labs/agent-skills` — vercel-react-best-practices, vercel-composition-patterns, web-design-guidelines
+- `mattpocock/skills` — tdd, grill-me, improve-codebase-architecture, prd-to-issues, write-a-prd
+- `obra/superpowers` — systematic-debugging, subagent-driven-development
+
+**Installed by `/setup` based on stack:**
+- `vercel-labs/next-skills` — Next.js best practices, cache components, upgrade guides
+- `supabase/agent-skills` — Postgres performance optimization
+- `prisma/skills` — Prisma v7 CLI, client API, database setup, upgrade guide
+- `shadcn/ui` — Component patterns, theming, CLI reference
+- `langchain-ai/langchain-skills` — LangChain, LangGraph, agent development
+
+**Install your own:** `npx skills add <owner/repo>` — browse at https://skills.sh
 
 ### Available Skill Templates
 
@@ -431,11 +454,24 @@ Templates in `templates/` are framework-specific rules and skills that get copie
 | `vercel-react-best-practices/` | vercel-labs/agent-skills | React/Next.js perf (40+ rules, 208K installs) |
 | `vercel-composition-patterns/` | vercel-labs/agent-skills | Component composition that scales |
 | `nextjs-app-router-patterns/` | wshobson/agents | Next.js 15+ App Router patterns (8.3K installs) |
+| `next-best-practices/` | vercel-labs/next-skills | Next.js best practices (41K installs) |
+| `next-cache-components/` | vercel-labs/next-skills | Cache component patterns |
+| `next-upgrade/` | vercel-labs/next-skills | Next.js upgrade guides |
+| `supabase-postgres-best-practices/` | supabase/agent-skills | Postgres optimization (45K installs) |
+| `prisma-cli/` | prisma/skills | Prisma CLI usage |
+| `prisma-client-api/` | prisma/skills | Prisma Client API patterns |
+| `prisma-database-setup/` | prisma/skills | Database setup with Prisma |
+| `prisma-upgrade-v7/` | prisma/skills | Prisma v7 upgrade guide |
+| `shadcn/` | shadcn/ui | shadcn/ui component patterns (35K installs) |
+| `langchain-fundamentals/` | langchain-ai/langchain-skills | LangChain basics |
+| `langgraph-fundamentals/` | langchain-ai/langchain-skills | LangGraph agent patterns |
 | `fastapi-templates/` | wshobson/agents | FastAPI route patterns (6.4K installs) |
 | `python-performance-optimization/` | wshobson/agents | Python performance (8.9K installs) |
 | `python-testing-patterns/` | wshobson/agents | Python testing patterns (7.1K installs) |
 | `api-design/` | supercent-io/skills-template | REST API design patterns (10.8K installs) |
 | `database-schema-design/` | supercent-io/skills-template | Schema design, migrations (11K installs) |
+| `express-production/` | bobmatnyc/claude-mpm-skills | Express.js production patterns |
+| `express-typescript/` | mindrally/skills | Express + TypeScript patterns |
 | `agent-development/` | Custom | Tool design, prompt engineering, MCP |
 | `edge-api/` | Custom | Edge API patterns |
 
@@ -443,12 +479,17 @@ Templates in `templates/` are framework-specific rules and skills that get copie
 
 `/setup` maps frameworks to templates:
 
-| Detected Framework | Rule Template | Skill Templates |
-|--------------------|---------------|-----------------|
-| Next.js | `nextjs.md` | `vercel-react-best-practices/`, `vercel-composition-patterns/`, `nextjs-app-router-patterns/` |
-| FastAPI | `fastapi.md` | `api-design/`, `database-schema-design/`, `fastapi-templates/`, `python-performance-optimization/` |
-| CLI tool | `cli-tool.md` | — |
-| AI Agent | `ai-agents.md` | `agent-development/` |
+| Detected Framework | Rule Template | Skill Templates | Community Skills |
+|--------------------|---------------|-----------------|-----------------|
+| Next.js | `nextjs.md` | `vercel-react-best-practices/`, `vercel-composition-patterns/`, `nextjs-app-router-patterns/` | `vercel-labs/next-skills` |
+| FastAPI | `fastapi.md` | `api-design/`, `database-schema-design/`, `fastapi-templates/`, `python-performance-optimization/` | — |
+| CLI tool | `cli-tool.md` | — | — |
+| AI Agent | `ai-agents.md` | `agent-development/` | `langchain-ai/langchain-skills` |
+| Supabase | `supabase.md` | `supabase-postgres-best-practices/` | `supabase/agent-skills` |
+| Prisma | `prisma.md` | `prisma-cli/`, `prisma-client-api/`, `prisma-database-setup/` | `prisma/skills` |
+| Drizzle | `drizzle.md` | — | — |
+| shadcn/ui | `shadcn-ui.md` | `shadcn/` | `shadcn/ui` |
+| Custom + Express | `express.md` | `express-typescript/`, `express-production/`, `api-design/` | — |
 
 Users can also select additional skill templates (database, API design, agent development, python testing) regardless of framework. The `python-testing-patterns/` skill is offered to all Python stacks during Phase B of setup.
 

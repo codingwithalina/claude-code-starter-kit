@@ -33,6 +33,18 @@ Replace `ARGUMENTS` in the planning command with: **$ARGUMENTS**
 
 ---
 
+## Step 2.25: Complexity Gate — Human Checkpoint
+
+Based on the plan's complexity assessment:
+
+- **Low complexity**: Proceed automatically to execution.
+- **Medium complexity**: Show a brief plan summary (key changes, files affected, approach). Ask the user to review and say "proceed" before continuing.
+- **High complexity**: Show the plan summary + key risks and open questions. Always pause and wait for explicit user approval before proceeding.
+
+**Gate**: User must confirm "proceed" (or equivalent) for Medium/High complexity plans.
+
+---
+
 ## Step 2.5: Save State — Commit Plan as Checkpoint
 
 Before execution, commit the plan as a save state. This enables rollback to the plan checkpoint if implementation goes wrong.

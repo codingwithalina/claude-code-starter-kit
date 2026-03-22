@@ -8,6 +8,7 @@
 @.claude/rules/security.md
 @.claude/rules/architecture.md
 @.claude/rules/ai-workflow.md
+@.claude/rules/known-issues.md
 
 ## Context
 
